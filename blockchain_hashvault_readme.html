@@ -1,0 +1,347 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-mono); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+  .hero { text-align: center; padding: 3rem 1rem 2.5rem; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 1.5rem; background: var(--color-background-secondary); position: relative; overflow: hidden; }
+  .hero-chain { display: flex; justify-content: center; gap: 0; margin-bottom: 1.5rem; }
+  .hblock { width: 54px; height: 54px; border-radius: 8px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; transition: transform 0.2s; cursor: default; }
+  .hblock:hover { transform: translateY(-4px); }
+  .hblock:not(:last-child)::after { content: '→'; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--color-text-tertiary); }
+  .chain-gap { width: 36px; }
+  .hero h1 { font-size: 28px; font-weight: 500; letter-spacing: -0.5px; color: var(--color-text-primary); margin-bottom: 0.4rem; }
+  .hero h1 span { color: #1D9E75; }
+  .subtitle { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.2rem; font-family: var(--font-mono); }
+  .badges { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; font-family: var(--font-mono); border: 0.5px solid; }
+  .badge-green { background: #E1F5EE; color: #0F6E56; border-color: #5DCAA5; }
+  .badge-blue { background: #E6F1FB; color: #185FA5; border-color: #378ADD; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; border-color: #EF9F27; }
+  .badge-gray { background: var(--color-background-secondary); color: var(--color-text-secondary); border-color: var(--color-border-secondary); }
+
+  .tabs { display: flex; gap: 0; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); overflow: hidden; margin-bottom: 1.5rem; }
+  .tab { flex: 1; padding: 0.6rem 0; font-size: 12px; font-weight: 500; font-family: var(--font-mono); text-align: center; cursor: pointer; background: var(--color-background-secondary); color: var(--color-text-secondary); border: none; border-right: 0.5px solid var(--color-border-tertiary); transition: all 0.15s; }
+  .tab:last-child { border-right: none; }
+  .tab.active { background: var(--color-background-primary); color: var(--color-text-primary); }
+  .tab:hover:not(.active) { color: var(--color-text-primary); }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+  .card h3 { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .card p { font-size: 14px; color: var(--color-text-primary); line-height: 1.7; font-family: var(--font-sans); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .feature-row { display: flex; align-items: flex-start; gap: 10px; padding: 0.75rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .feature-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .feat-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+  .feat-icon.g { background: #E1F5EE; color: #0F6E56; }
+  .feat-icon.b { background: #E6F1FB; color: #185FA5; }
+  .feat-icon.a { background: #FAEEDA; color: #854F0B; }
+  .feat-icon.p { background: #EEEDFE; color: #3C3489; }
+  .feat-text { font-size: 13px; color: var(--color-text-primary); font-family: var(--font-sans); line-height: 1.5; }
+  .feat-text strong { font-weight: 500; display: block; margin-bottom: 2px; }
+
+  .code-block { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 1rem; font-size: 12px; font-family: var(--font-mono); line-height: 1.8; overflow-x: auto; margin-bottom: 0.75rem; }
+  .code-block .cmt { color: var(--color-text-tertiary); }
+  .code-block .kw { color: #1D9E75; }
+  .code-block .fn { color: #185FA5; }
+  .code-block .str { color: #854F0B; }
+  .code-block .num { color: #993556; }
+
+  .step-row { display: flex; gap: 12px; align-items: flex-start; padding: 0.75rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .step-row:last-child { border-bottom: none; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); flex-shrink: 0; margin-top: 1px; }
+  .step-text { font-size: 13px; color: var(--color-text-primary); font-family: var(--font-sans); line-height: 1.6; }
+  .step-text code { font-family: var(--font-mono); font-size: 11px; background: var(--color-background-secondary); padding: 1px 5px; border-radius: 4px; }
+
+  .hash-demo { padding: 0; }
+  .hash-input-row { display: flex; gap: 8px; margin-bottom: 1rem; align-items: center; }
+  .hash-input-row input { flex: 1; font-family: var(--font-mono); font-size: 13px; padding: 0.5rem 0.75rem; }
+  .hash-input-row button { font-family: var(--font-mono); font-size: 12px; padding: 0.5rem 1rem; white-space: nowrap; }
+  .hash-result { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 11px; word-break: break-all; color: #1D9E75; min-height: 38px; line-height: 1.6; }
+  .hash-label { font-size: 11px; color: var(--color-text-tertiary); margin-bottom: 4px; }
+  .hash-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 0.75rem; }
+
+  .struct-diagram { display: flex; flex-direction: column; gap: 4px; }
+  .block-vis { border: 0.5px solid var(--color-border-secondary); border-radius: 8px; overflow: hidden; }
+  .block-header { background: var(--color-background-secondary); padding: 6px 12px; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); font-family: var(--font-mono); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .block-field { display: flex; justify-content: space-between; padding: 5px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 12px; font-family: var(--font-mono); }
+  .block-field:last-child { border-bottom: none; }
+  .block-field .fname { color: var(--color-text-secondary); }
+  .block-field .fval { color: var(--color-text-primary); font-size: 11px; word-break: break-all; max-width: 60%; text-align: right; }
+  .fval.green { color: #1D9E75; }
+  .chain-arrow { text-align: center; font-size: 18px; color: var(--color-text-tertiary); line-height: 1; }
+
+  .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .name-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; cursor: pointer; transition: border-color 0.15s; }
+  .name-card:hover { border-color: var(--color-border-primary); }
+  .name-card.picked { border-color: #1D9E75; background: #E1F5EE; }
+  .name-card .nname { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; font-family: var(--font-mono); }
+  .name-card.picked .nname { color: #0F6E56; }
+  .name-card .ndesc { font-size: 12px; color: var(--color-text-secondary); font-family: var(--font-sans); line-height: 1.4; }
+  .name-card .ntag { font-size: 10px; padding: 2px 6px; border-radius: 10px; background: var(--color-background-secondary); color: var(--color-text-tertiary); border: 0.5px solid var(--color-border-tertiary); display: inline-block; margin-top: 5px; }
+  .name-card.picked .ntag { background: #9FE1CB; color: #085041; border-color: #5DCAA5; }
+
+  .footer-btns { display: flex; gap: 8px; margin-top: 1.5rem; }
+  .footer-btns button { font-size: 13px; padding: 0.6rem 1.2rem; }
+</style>
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-chain">
+      <div class="hblock">🔐</div>
+      <div class="chain-gap"></div>
+      <div class="hblock">📦</div>
+      <div class="chain-gap"></div>
+      <div class="hblock">🔗</div>
+      <div class="chain-gap"></div>
+      <div class="hblock">✅</div>
+    </div>
+    <h1>Hash<span>Vault</span> — Blockchain Transactions</h1>
+    <p class="subtitle">// secure peer-to-peer ledger demo · python · sha3-256 · final year project</p>
+    <div class="badges">
+      <span class="badge badge-green">Python 3.x</span>
+      <span class="badge badge-blue">Google Colab</span>
+      <span class="badge badge-amber">SHA3-256</span>
+      <span class="badge badge-gray">Blockchain</span>
+      <span class="badge badge-gray">Final Year Project</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('about')">📄 About</button>
+    <button class="tab" onclick="showTab('structure')">🧱 Block Structure</button>
+    <button class="tab" onclick="showTab('demo')">⚡ Live Demo</button>
+    <button class="tab" onclick="showTab('setup')">🚀 Setup</button>
+    <button class="tab" onclick="showTab('name')">✏️ Project Name</button>
+  </div>
+
+  <div id="tab-about" class="section active">
+    <div class="card">
+      <h3>Abstract</h3>
+      <p>HashVault demonstrates how blockchain technology secures peer-to-peer financial transactions between friends — without requiring a central authority like a bank. Each transaction is cryptographically hashed and chained to the previous block, making the ledger tamper-evident and transparent.</p>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Key capabilities</h3>
+        <div class="feature-row">
+          <div class="feat-icon g"><i class="ti ti-shield-lock" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Cryptographic hashing</strong>SHA3-256 generates a unique 256-bit fingerprint for every block of data.</div>
+        </div>
+        <div class="feature-row">
+          <div class="feat-icon b"><i class="ti ti-link" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Chain immutability</strong>Altering any block invalidates all subsequent hashes, detecting tampering instantly.</div>
+        </div>
+        <div class="feature-row">
+          <div class="feat-icon a"><i class="ti ti-eye" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Transparency</strong>Every transaction is visible across all nodes in the distributed ledger.</div>
+        </div>
+        <div class="feature-row">
+          <div class="feat-icon p"><i class="ti ti-chart-dots" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Decentralization</strong>No single point of failure or authority controls the transaction record.</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Requirements</h3>
+        <div class="feature-row">
+          <div class="feat-icon g"><i class="ti ti-brand-python" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Python 3.x</strong>Only built-in <code style="font-family:var(--font-mono);font-size:11px;background:var(--color-background-secondary);padding:1px 4px;border-radius:4px">hashlib</code> is used — no pip installs needed.</div>
+        </div>
+        <div class="feature-row">
+          <div class="feat-icon b"><i class="ti ti-notebook" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Jupyter / VS Code</strong>Runs in Google Colab, VS Code with Jupyter extension, or any Python IDE.</div>
+        </div>
+        <div class="feature-row">
+          <div class="feat-icon a"><i class="ti ti-device-laptop" aria-hidden="true"></i></div>
+          <div class="feat-text"><strong>Any hardware</strong>Works on mobile, tablet, laptop, or desktop — platform independent.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-structure" class="section">
+    <div class="card">
+      <h3>How a block is built</h3>
+      <div class="struct-diagram">
+        <div class="block-vis">
+          <div class="block-header">Block #0 — Genesis</div>
+          <div class="block-field"><span class="fname">data</span><span class="fval">{"sender":"Alice","receiver":"Bob","amount":500}</span></div>
+          <div class="block-field"><span class="fname">nonce</span><span class="fval">3847291</span></div>
+          <div class="block-field"><span class="fname">prev_hash</span><span class="fval">0000000000000000</span></div>
+          <div class="block-field"><span class="fname">hash</span><span class="fval green">0000a4f82b3c9e1d...</span></div>
+        </div>
+        <div class="chain-arrow">↓</div>
+        <div class="block-vis">
+          <div class="block-header">Block #1</div>
+          <div class="block-field"><span class="fname">data</span><span class="fval">{"sender":"Bob","receiver":"Carol","amount":200}</span></div>
+          <div class="block-field"><span class="fname">nonce</span><span class="fval">9123045</span></div>
+          <div class="block-field"><span class="fname">prev_hash</span><span class="fval green">0000a4f82b3c9e1d...</span></div>
+          <div class="block-field"><span class="fname">hash</span><span class="fval green">00003d7c5a2f8b1e...</span></div>
+        </div>
+        <div class="chain-arrow">↓</div>
+        <div class="block-vis">
+          <div class="block-header">Block #2</div>
+          <div class="block-field"><span class="fname">data</span><span class="fval">{"sender":"Carol","receiver":"Alice","amount":100}</span></div>
+          <div class="block-field"><span class="fname">nonce</span><span class="fval">6742819</span></div>
+          <div class="block-field"><span class="fname">prev_hash</span><span class="fval green">00003d7c5a2f8b1e...</span></div>
+          <div class="block-field"><span class="fname">hash</span><span class="fval green">0000e9a1c4d72f3b...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-demo" class="section">
+    <div class="card hash-demo">
+      <h3>SHA3-256 hash generator</h3>
+      <p style="font-size:13px;color:var(--color-text-secondary);font-family:var(--font-sans);margin-bottom:1rem;line-height:1.5;">Type any text below and see how even a single character change produces a completely different hash — this is how blockchain detects tampering.</p>
+      <div class="hash-input-row">
+        <input type="text" id="hashInput" placeholder="e.g. HELLO SECURITY GUY" value="HELLO SECURITY GUY" oninput="computeHash()" />
+        <button onclick="computeHash()">Hash it ↗</button>
+      </div>
+      <div class="hash-label">sha3-256 output (256 bits / 64 hex chars)</div>
+      <div class="hash-result" id="hashOut">computing...</div>
+      <div class="hash-compare">
+        <div>
+          <div class="hash-label">Input A (original)</div>
+          <div class="hash-result" id="hashA" style="font-size:10px;color:var(--color-text-secondary)">—</div>
+        </div>
+        <div>
+          <div class="hash-label">Input B (lowercased)</div>
+          <div class="hash-result" id="hashB" style="font-size:10px;color:var(--color-text-secondary)">—</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:0.75rem;font-family:var(--font-sans)">⚠️ Note: This uses a browser SHA-256 approximation for the live demo. The actual project uses Python's <code style="font-family:var(--font-mono);font-size:11px;background:var(--color-background-secondary);padding:1px 4px;border-radius:4px">hashlib.sha3_256()</code>.</p>
+    </div>
+  </div>
+
+  <div id="tab-setup" class="section">
+    <div class="card">
+      <h3>Option A — VS Code (Windows)</h3>
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-text">Download and install <strong>Python 3.x</strong> from <code>python.org/downloads</code> — tick <strong>"Add Python to PATH"</strong> during setup.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-text">In VS Code, install two extensions: <code>Python</code> by Microsoft and <code>Jupyter</code> by Microsoft (Ctrl+Shift+X to open extensions).</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-text">Extract the ZIP, open the folder in VS Code, then open <code>Blockchain_Project_dem.ipynb</code>.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-text">Select your Python kernel (top-right of the notebook). Press <code>Shift+Enter</code> to run cells — no pip installs needed.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Option B — Google Colab (no install)</h3>
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-text">Go to <code>colab.research.google.com</code> → File → Upload notebook.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-text">Upload <code>Blockchain_Project_dem.ipynb</code> and click <strong>Run All</strong>. Done.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Core code snippet</h3>
+      <div class="code-block">
+        <span class="cmt"># Import built-in hashing library</span><br>
+        <span class="kw">import</span> hashlib<br><br>
+        <span class="cmt"># Hash a transaction string with SHA3-256</span><br>
+        m = hashlib.<span class="fn">sha3_256</span>()<br>
+        m.<span class="fn">update</span>(<span class="str">b'Alice sends Bob 500 INR'</span>)<br>
+        tx_hash = m.<span class="fn">hexdigest</span>()<br><br>
+        <span class="fn">print</span>(<span class="str">f'Hash: </span>{tx_hash}<span class="str">'</span>)
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-name" class="section">
+    <div class="card">
+      <h3>Suggested project names</h3>
+      <p style="font-size:13px;color:var(--color-text-secondary);font-family:var(--font-sans);margin-bottom:1rem;line-height:1.5;">Click a name to select it, then use "Ask Claude" to get a full pitch for your project report.</p>
+      <div class="name-grid">
+        <div class="name-card picked" onclick="pickName(this,'HashVault')">
+          <div class="nname">HashVault</div>
+          <div class="ndesc">Emphasizes cryptographic security. Clean, memorable, professional.</div>
+          <span class="ntag">⭐ Recommended</span>
+        </div>
+        <div class="name-card" onclick="pickName(this,'ChainLedger')">
+          <div class="nname">ChainLedger</div>
+          <div class="ndesc">Directly describes what it does — a chained transaction ledger.</div>
+          <span class="ntag">Clear & literal</span>
+        </div>
+        <div class="name-card" onclick="pickName(this,'TrustChain')">
+          <div class="nname">TrustChain</div>
+          <div class="ndesc">Highlights the trust-without-authority value proposition of blockchain.</div>
+          <span class="ntag">Concept-first</span>
+        </div>
+        <div class="name-card" onclick="pickName(this,'BlockPay')">
+          <div class="nname">BlockPay</div>
+          <div class="ndesc">Simple, app-like name. Makes the payment use case immediately obvious.</div>
+          <span class="ntag">Fintech feel</span>
+        </div>
+        <div class="name-card" onclick="pickName(this,'LedgerProof')">
+          <div class="nname">LedgerProof</div>
+          <div class="ndesc">Academic tone. Proof-of-concept framing suits a final year project well.</div>
+          <span class="ntag">Academic</span>
+        </div>
+        <div class="name-card" onclick="pickName(this,'CryptoPeer')">
+          <div class="nname">CryptoPeer</div>
+          <div class="ndesc">Crypto + peer-to-peer. Modern and relevant to current industry language.</div>
+          <span class="ntag">Industry language</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-btns">
+      <button onclick="askClaude()">Ask Claude to write a report intro for my chosen name ↗</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let chosenName = 'HashVault';
+
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function pickName(el, name) {
+  chosenName = name;
+  document.querySelectorAll('.name-card').forEach(c => c.classList.remove('picked'));
+  el.classList.add('picked');
+}
+
+function askClaude() {
+  sendPrompt('Write a project report abstract and introduction for my blockchain final year project called "' + chosenName + '". Make it professional and suitable for a BScIT submission.');
+}
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function computeHash() {
+  const val = document.getElementById('hashInput').value || '';
+  const h = await sha256(val);
+  document.getElementById('hashOut').textContent = h || '(empty input)';
+  const hLower = await sha256(val.toLowerCase());
+  document.getElementById('hashA').textContent = val ? h : '—';
+  document.getElementById('hashB').textContent = val ? hLower : '—';
+  if (val) {
+    document.getElementById('hashA').style.color = '#1D9E75';
+    document.getElementById('hashB').style.color = val === val.toLowerCase() ? 'var(--color-text-secondary)' : '#993556';
+  }
+}
+
+computeHash();
+</script>
