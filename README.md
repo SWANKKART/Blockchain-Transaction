@@ -2,6 +2,12 @@
 
 > A Python-based blockchain demonstration that simulates secure peer-to-peer transactions using SHA3-256 cryptographic hashing.
 
+![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square&logo=python)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?style=flat-square&logo=jupyter)
+![Algorithm](https://img.shields.io/badge/Algorithm-SHA3--256-green?style=flat-square)
+![Platform](https://img.shields.io/badge/Platform-Google%20Colab%20%7C%20VS%20Code-lightgrey?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+
 ---
 
 ## 📌 About
